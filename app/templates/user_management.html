@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}User Management{% endblock %}
+
+{% block content %}
+<h2>User Management</h2>
+
+<!-- Create User Form -->
+<h3>Create a New User</h3>
+<form method="POST" action="{{ url_for('user.create_user') }}">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Create User</button>
+</form>
+
+<!-- Change Password Form -->
+<h3>Change Your Password</h3>
+<form method="POST" action="{{ url_for('user.change_password') }}">
+    <label for="current_password">Current Password:</label>
+    <input type="password" id="current_password" name="current_password" required>
+
+    <label for="new_password">New Password:</label>
+    <input type="password" id="new_password" name="new_password" required>
+
+    <button type="submit">Change Password</button>
+</form>
+
+<!-- List of Users -->
+<h3>Existing Users</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Actions</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>
+            {% if user.id != current_user.id %}
+                <form method="POST" action="{{ url_for('user.delete_user', user_id=user.id) }}">
+                    <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            {% else %}
+                <span>Cannot delete self</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

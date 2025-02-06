@@ -1,0 +1,17 @@
+# Ignore Python cache and environment files
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+
+# Ignore instance and database files
+instance/
+sentinedl.db
+
+# Ignore migrations (since DB is final)
+migrations/
+alembic.ini
+
+# Ignore sensitive environment variables
+.env

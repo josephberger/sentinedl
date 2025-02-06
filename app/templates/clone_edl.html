@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Clone EDL - {{ edl.name }}{% endblock %}
+
+{% block content %}
+    <h2>Clone EDL: {{ edl.name }}</h2>
+    <p>Provide a new name for the cloned EDL. The default description will be "Clone of {{ edl.name }}".</p>
+
+    <form method="POST" action="{{ url_for('edl.clone_edl', edl_id=edl.id) }}">
+        <label for="new_name">New EDL Name:</label>
+        <input type="text" id="new_name" name="new_name" required>
+
+        <label for="description">Description (Optional):</label>
+        <input type="text" id="description" name="description" value="Clone of {{ edl.name }}">
+
+        <button type="submit">Create Clone</button>
+    </form>
+
+    <a href="{{ url_for('edl.view_edl', edl_id=edl.id) }}">Cancel</a>
+{% endblock %}

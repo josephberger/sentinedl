@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Home - SentinEDL{% endblock %}
+
+{% block content %}
+    <h2>Welcome to SentinEDL</h2>
+
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+
+    {% if current_user.is_authenticated %}
+    <h3>Create a New EDL</h3>
+    <form method="POST" action="{{ url_for('edl.create_edl') }}">
+        <label for="name">EDL Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description">
+
+        <button type="submit">Create EDL</button>
+    </form>
+    {% endif %}
+
+
+    <h3>Existing EDLs</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for edl in edls %}
+            <tr>
+                <td>{{ edl.name }}</td>
+                <td>{{ edl.description }}</td>
+                <td>{{ edl.created_by }}</td>
+                <td>
+                    <a href="{{ url_for('edl.view_edl', edl_id=edl.id) }}">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+

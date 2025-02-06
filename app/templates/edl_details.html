@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{{ edl.name }} - SentinEDL{% endblock %}
+
+{% block content %}
+    <h2>EDL: {{ edl.name }}</h2>
+    <p>{{ edl.description }}</p>
+
+    {% if current_user.is_authenticated %}
+    <h3>Add a New Entry</h3>
+    <form method="POST" action="{{ url_for('edl.add_entry', edl_id=edl.id) }}">
+        <label for="value">Entry Value:</label>
+        <input type="text" id="value" name="value" required>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description">
+
+        <button type="submit">Add Entry</button>
+    </form>
+    {% endif %}
+
+    <h3>Entries</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Value</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Created By</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                <td>{{ entry.value }}</td>
+                <td>{{ entry.description }}</td>
+                <td>{{ entry.created_at }}</td>
+                <td>{{ entry.created_by }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('edl.delete_entry', entry_id=entry.id) }}" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this entry?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Actions</h3>
+    <a href="{{ url_for('edl.clone_edl_form', edl_id=edl.id) }}">
+        <button>Clone This EDL</button>
+    </a>
+    
+    <h3>Export</h3>
+    <table class="export-table">
+        <tr>
+            <td><a href="{{ url_for('edl.get_edl_entries_plaintext', edl_name=edl.name) }}" target="_blank" class="export-link">Plain Text (PanOS)</a></td>
+            <td><a href="{{ url_for('edl.export_edl_json', edl_id=edl.id) }}" target="_blank" class="export-link">JSON</a></td>
+            <td><a href="{{ url_for('edl.export_edl_csv', edl_id=edl.id) }}" target="_blank" class="export-link">CSV</a></td>
+        </tr>
+    </table>
+    
+    {% if current_user.is_authenticated %}
+    <h3>Danger Zone</h3>
+    <a href="{{ url_for('edl.delete_edl_confirmation', edl_id=edl.id) }}">
+        <button>Delete This EDL</button>
+    </a>
+    {% endif %}
+{% endblock %}

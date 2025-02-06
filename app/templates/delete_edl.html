@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Delete EDL - {{ edl.name }}{% endblock %}
+
+{% block content %}
+    <h2>Confirm Deletion</h2>
+    <p>Are you sure you want to delete the EDL "<strong>{{ edl.name }}</strong>"?</p>
+    <p>This action <strong>cannot be undone</strong> and will remove all associated entries.</p>
+
+    <form method="POST" action="{{ url_for('edl.confirm_delete_edl', edl_id=edl.id) }}">
+        <button type="submit">Yes, Delete</button>
+        <a href="{{ url_for('edl.view_edl', edl_id=edl.id) }}">Cancel</a>
+    </form>
+{% endblock %}
