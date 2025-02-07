@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="https://raw.githubusercontent.com/josephberger/sentinedl/refs/heads/main/app/static/sentinedl_logo.webp" alt="SentinEDL Logo" width="30%">
+</p>
+
 # SentinEDL
 
 ## Overview
