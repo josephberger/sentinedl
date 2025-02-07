@@ -47,10 +47,12 @@
         </tbody>
     </table>
 
+    {% if current_user.is_authenticated %}
     <h3>Actions</h3>
     <a href="{{ url_for('edl.clone_edl_form', edl_id=edl.id) }}">
         <button>Clone This EDL</button>
     </a>
+    {% endif %}
     
     <h3>Export</h3>
     <table class="export-table">
