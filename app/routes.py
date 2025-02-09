@@ -260,7 +260,6 @@ def get_edl_entries_plaintext(edl_name):
 
 
 @edl_bp.route("/edl/<int:edl_id>/export/json")
-@login_required
 def export_edl_json(edl_id):
     """Export a single EDL and its entries as JSON."""
     session = SessionLocal()
@@ -292,7 +291,6 @@ def export_edl_json(edl_id):
     return jsonify(edl_data)
 
 @edl_bp.route("/edl/<int:edl_id>/export/csv")
-@login_required
 def export_edl_csv(edl_id):
     """Export a single EDL and its entries as CSV."""
     session = SessionLocal()
