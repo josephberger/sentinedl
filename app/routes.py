@@ -3,7 +3,7 @@ import io
 import re
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash, Response
 from app.database import SessionLocal
-from sqlalchemy.orm import joinedload 
+from sqlalchemy.orm import joinedload
 from app.models import EDL, Entry
 from flask_login import login_required, current_user
 
@@ -28,7 +28,7 @@ def validate_entry_value(value):
     ipv6_pattern = r"^([0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}$"
     fqdn_pattern = r"^(\*\.)?(?!-)[A-Za-z0-9-]{1,63}(?<!-)\.(?:[A-Za-z]{2,8})$"
     url_pattern = r"^(\*\.)?([A-Za-z0-9.-]+)\.(?:[A-Za-z]{2,8})(/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$"
-    
+
     if re.match(ip_pattern, value):
         return value, None
     if re.match(ipv6_pattern, value):
@@ -37,7 +37,7 @@ def validate_entry_value(value):
         return value, None
     if re.match(url_pattern, value):
         return value, None
-    
+
     return None, "Entry value must be a valid IPv4, IPv6, FQDN, or URL."
 
 @edl_bp.route("/", methods=["GET"])
@@ -92,7 +92,7 @@ def view_edl(edl_id):
     """View EDL details including its entries."""
     session = SessionLocal()
     edl = session.query(EDL).filter_by(id=edl_id).first()
-    
+
     if not edl:
         session.close()
         return "EDL Not Found", 404
@@ -114,13 +114,13 @@ def add_entry(edl_id):
     if error:
         flash(error, "error")
         return redirect(url_for("edl.view_edl", edl_id=edl_id))
-    
+
     # Validate description
     description, error = sanitize_description(description)
     if error:
         flash(error, "error")
         return redirect(url_for("edl.view_edl", edl_id=edl_id))
-    
+
     session = SessionLocal()
     new_entry = Entry(edl_id=edl_id, value=value, description=description, created_by=current_user.username)  # Track creator
     session.add(new_entry)
@@ -229,9 +229,15 @@ def clone_edl(edl_id):
     session.commit()
 
     # Copy entries
-    for entry in original_edl.entries:
-        cloned_entry = Entry(edl_id=cloned_edl.id, value=entry.value, description=entry.description)
-        session.add(cloned_entry)
+    cloned_entries = [
+        Entry(
+            edl_id=cloned_edl.id,
+            value=entry.value,
+            description=entry.description,
+        )
+        for entry in original_edl.entries
+    ]
+    session.bulk_save_objects(cloned_entries)
 
     session.commit()
     session.close()
@@ -295,7 +301,7 @@ def export_edl_csv(edl_id):
     """Export a single EDL and its entries as CSV."""
     session = SessionLocal()
     edl = session.query(EDL).options(joinedload(EDL.entries)).filter_by(id=edl_id).first()
-    
+
     if not edl:
         session.close()
         flash("EDL not found.", "error")
